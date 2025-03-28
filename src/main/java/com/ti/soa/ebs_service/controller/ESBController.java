@@ -21,6 +21,21 @@ public class ESBController {
     // private final String SECRET_KEY = "aJksd9QzPl+sVdK7vYc/L4dK8HgQmPpQ5K9yApUsj3w=";
     private final Auth auth = new Auth();
 
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody User user) {
+        String response = webClient.post()
+                // .uri("http://localhost:3000/api/users/createuser")
+                // .uri("http://users:3001/api/users/createuser")
+                .uri("http://users.railway.internal:3001/api/users/login")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .bodyValue(user)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        return ResponseEntity.ok(response);
+    }
+
+
     @GetMapping("/users")
     public ResponseEntity<String> getUsers(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if (!auth.validateToken(token)) {
